@@ -3,6 +3,7 @@ package org.example.contentservice.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
+import org.example.cloudcommon.NotificationEvent;
 import org.example.contentservice.entity.Comment;
 import org.example.contentservice.entity.Like;
 import org.example.contentservice.entity.Post;
@@ -13,10 +14,12 @@ import org.example.contentservice.mapper.PostMapper;
 import org.example.contentservice.service.LikeService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.amqp.core.AmqpTemplate;
 
 import java.util.List;
 import java.util.Set;
 import java.util.Date;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +29,9 @@ public class LikeServiceImpl extends ServiceImpl<LikeMapper, Like> implements Li
 
     @Resource
     private CommentMapper commentMapper;
+
+    @Resource
+    private AmqpTemplate amqpTemplate;
 
     @Override
     @Transactional
@@ -60,6 +66,14 @@ public class LikeServiceImpl extends ServiceImpl<LikeMapper, Like> implements Li
                 : commentMapper.update(null, Wrappers.<Comment>update().eq("id", request.getTargetId())
                 .setSql("like_count = GREATEST(like_count + " + delta + ", 0)")) > 0;
         if (!updated) return LikeToggleResult.failure("内部错误，请联系管理员");
+        if (postTarget && existing == null) {
+            Post post = postMapper.selectById(request.getTargetId());
+            if (post != null && !userId.equals(post.getAuthorId())) {
+                amqpTemplate.convertAndSend("notification", new NotificationEvent(
+                        UUID.randomUUID().toString(), userId, post.getAuthorId(),
+                        "POST_LIKE", post.getId(), null, "有人赞了你的帖子"));
+            }
+        }
         return LikeToggleResult.success(existing == null, 0);
     }
 

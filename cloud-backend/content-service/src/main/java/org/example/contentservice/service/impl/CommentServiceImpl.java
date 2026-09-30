@@ -3,6 +3,7 @@ package org.example.contentservice.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
+import org.example.cloudcommon.NotificationEvent;
 import org.example.cloudcommon.AccountSummary;
 import org.example.contentservice.client.AccountClient;
 import org.example.contentservice.entity.Comment;
@@ -14,6 +15,7 @@ import org.example.contentservice.service.CommentService;
 import org.example.contentservice.service.PostService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.amqp.core.AmqpTemplate;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Service
 public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> implements CommentService {
@@ -30,6 +33,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
     @Resource
     private AccountClient accountClient;
+
+    @Resource
+    private AmqpTemplate amqpTemplate;
 
     @Override
     @Transactional
@@ -50,7 +56,17 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         if (!save(comment)) return "内部错误，请联系管理员";
         boolean updated = postService.update().eq("id", request.getPostId())
                 .setSql("comment_count = comment_count + 1").update();
-        return updated ? null : "内部错误，请联系管理员";
+        if (!updated) return "内部错误，请联系管理员";
+        Integer recipientId = request.getParentId() == null ? post.getAuthorId()
+                : getById(request.getParentId()).getAuthorId();
+        if (recipientId != null && !recipientId.equals(authorId)) {
+            amqpTemplate.convertAndSend("notification", new NotificationEvent(
+                    UUID.randomUUID().toString(), authorId, recipientId,
+                    request.getParentId() == null ? "POST_COMMENT" : "COMMENT_REPLY",
+                    request.getPostId(), comment.getId(),
+                    request.getParentId() == null ? "评论了你的帖子" : "回复了你的评论"));
+        }
+        return null;
     }
 
     @Override

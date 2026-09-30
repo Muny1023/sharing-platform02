@@ -25,7 +25,7 @@ public class ContentSecurityConfiguration {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(conf -> conf
-                        .requestMatchers("/error", "/internal/ai/**").permitAll()
+                        .requestMatchers("/error", "/internal/ai/**", "/internal/content/**").permitAll()
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(conf -> conf.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
