@@ -33,10 +33,12 @@ class CloudGatewayApplicationTests {
 		}
 		assertEquals("lb://account-service", properties.getProperty("spring.cloud.gateway.routes[0].uri"));
 		assertEquals("lb://account-service", properties.getProperty("spring.cloud.gateway.routes[1].uri"));
-		assertEquals("lb://content-service", properties.getProperty("spring.cloud.gateway.routes[2].uri"));
-		assertEquals("lb://content-service", properties.getProperty("spring.cloud.gateway.routes[7].uri"));
+		assertEquals("lb://account-service", properties.getProperty("spring.cloud.gateway.routes[2].uri"));
+		assertEquals("Path=/api/seata/**", properties.getProperty("spring.cloud.gateway.routes[2].predicates[0]"));
+		assertEquals("lb://content-service", properties.getProperty("spring.cloud.gateway.routes[3].uri"));
+		assertEquals("lb://content-service", properties.getProperty("spring.cloud.gateway.routes[8].uri"));
 		assertEquals("Path=/api/ai/**,/internal/ai/**",
-				properties.getProperty("spring.cloud.gateway.routes[7].predicates[0]"));
+				properties.getProperty("spring.cloud.gateway.routes[8].predicates[0]"));
 		assertTrue(properties.getProperty("spring.cloud.sentinel.transport.dashboard")
 				.contains("localhost:8858"));
 		assertEquals("gw-flow", properties.getProperty("spring.cloud.sentinel.datasource.gateway-flow.nacos.rule-type"));

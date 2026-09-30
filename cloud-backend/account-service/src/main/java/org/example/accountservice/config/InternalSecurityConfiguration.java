@@ -13,4 +13,10 @@ public class InternalSecurityConfiguration {
             @Value("${spring.cloud.internal.token:${INTERNAL_SERVICE_TOKEN:dev-internal-token}}") String token) {
         return new InternalServiceTokenFilter(token, List.of("/internal/accounts"));
     }
+
+    @Bean
+    InternalFeignRequestInterceptor internalFeignRequestInterceptor(
+            @Value("${spring.cloud.internal.token:${INTERNAL_SERVICE_TOKEN:dev-internal-token}}") String token) {
+        return new InternalFeignRequestInterceptor(token);
+    }
 }
