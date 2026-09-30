@@ -21,6 +21,9 @@ public class ContentSecurityConfiguration {
     @Resource
     private ContentJwtFilter jwtFilter;
 
+    @Resource
+    private InternalServiceTokenFilter internalServiceTokenFilter;
+
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
@@ -30,6 +33,7 @@ public class ContentSecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(conf -> conf.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(conf -> conf.authenticationEntryPoint(this::unauthorized))
+                .addFilterBefore(internalServiceTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

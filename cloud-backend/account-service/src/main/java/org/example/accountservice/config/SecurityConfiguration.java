@@ -33,6 +33,9 @@ public class SecurityConfiguration {
     private JwtAuthorizeFilter jwtAuthorizeFilter;
 
     @Resource
+    private InternalServiceTokenFilter internalServiceTokenFilter;
+
+    @Resource
     private AccountService accountService;
 
     @Bean
@@ -54,6 +57,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(conf -> conf.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthorizeFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(internalServiceTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
