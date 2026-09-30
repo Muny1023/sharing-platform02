@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(properties = {
 		"spring.config.location=classpath:/application-test.properties",
@@ -36,6 +37,10 @@ class CloudGatewayApplicationTests {
 		assertEquals("lb://content-service", properties.getProperty("spring.cloud.gateway.routes[7].uri"));
 		assertEquals("Path=/api/ai/**,/internal/ai/**",
 				properties.getProperty("spring.cloud.gateway.routes[7].predicates[0]"));
+		assertTrue(properties.getProperty("spring.cloud.sentinel.transport.dashboard")
+				.contains("localhost:8858"));
+		assertEquals("gw-flow", properties.getProperty("spring.cloud.sentinel.datasource.gateway-flow.nacos.rule-type"));
+		assertEquals("429", properties.getProperty("spring.cloud.sentinel.scg.fallback.response-status"));
 	}
 
 }
