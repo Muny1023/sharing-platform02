@@ -21,13 +21,17 @@ public class NotificationSecurityConfiguration {
     @Resource
     private NotificationJwtFilter jwtFilter;
 
+    @Resource
+    private InternalServiceTokenFilter internalServiceTokenFilter;
+
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.authorizeHttpRequests(conf -> conf.requestMatchers("/error").permitAll()
+        return http.authorizeHttpRequests(conf -> conf.requestMatchers("/error", "/internal/notifications/**").permitAll()
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(conf -> conf.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(conf -> conf.authenticationEntryPoint(this::unauthorized))
+                .addFilterBefore(internalServiceTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

@@ -33,6 +33,9 @@ class CloudGatewayApplicationTests {
 		assertEquals("lb://account-service", properties.getProperty("spring.cloud.gateway.routes[0].uri"));
 		assertEquals("lb://account-service", properties.getProperty("spring.cloud.gateway.routes[1].uri"));
 		assertEquals("lb://content-service", properties.getProperty("spring.cloud.gateway.routes[2].uri"));
+		assertEquals("lb://content-service", properties.getProperty("spring.cloud.gateway.routes[7].uri"));
+		assertEquals("Path=/api/ai/**,/internal/ai/**",
+				properties.getProperty("spring.cloud.gateway.routes[7].predicates[0]"));
 	}
 
 }
