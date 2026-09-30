@@ -39,7 +39,7 @@ public class SecurityConfiguration {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(conf -> conf
-                        .requestMatchers("/api/auth/**", "/internal/ai/**", "/error").permitAll()
+                        .requestMatchers("/api/auth/**", "/internal/ai/**", "/internal/accounts/**", "/error").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(conf -> conf
                         .loginProcessingUrl("/api/auth/login")

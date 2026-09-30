@@ -13,6 +13,7 @@ import org.example.contentservice.entity.response.PostDetailResponse;
 import org.example.contentservice.entity.response.PostListResponse;
 import org.example.contentservice.mapper.PostMapper;
 import org.example.contentservice.mapper.PostTombstoneMapper;
+import org.example.contentservice.mapper.FavoriteMapper;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,9 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
 
     @Resource
     private PostTombstoneMapper tombstoneMapper;
+
+    @Resource
+    private FavoriteMapper favoriteMapper;
 
     @Override
     public String createPost(Integer authorId, PostCreateRequest request) {
@@ -66,6 +70,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         Date now = new Date();
         tombstoneMapper.insert(new PostTombstone(postId, now,
                 new Date(now.getTime() + TimeUnit.DAYS.toMillis(1))));
+        favoriteMapper.markPostDeleted(postId);
         return removeById(postId) ? null : "内部错误，请联系管理员";
     }
 

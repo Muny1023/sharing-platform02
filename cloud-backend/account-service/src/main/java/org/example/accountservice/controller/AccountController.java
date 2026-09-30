@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
 @RequestMapping("/api/user")
 public class AccountController {
@@ -22,4 +23,5 @@ public class AccountController {
                         account.getNickname(), account.getAvatar(), account.getRole())))
                 .orElseGet(() -> RestBean.failure(404, "账号不存在"));
     }
+
 }

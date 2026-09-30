@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,6 +25,9 @@ class AccountControllerTest {
 
     @InjectMocks
     private AccountController controller;
+
+    @InjectMocks
+    private InternalAccountController internalController;
 
     @Test
     void meReturnsPublicAccountProjection() {
@@ -47,5 +51,18 @@ class AccountControllerTest {
 
         assertEquals(404, response.code());
         assertEquals("账号不存在", response.message());
+    }
+
+    @Test
+    void batchReturnsOnlyPublicAccountFields() {
+        when(accountService.listByIds(List.of(1, 2))).thenReturn(List.of(
+                new Account(1, "alice", "secret", "a@mail.com", "user", new Date(), "爱丽丝", "a.png"),
+                new Account(2, "bob", "secret", "b@mail.com", "user", new Date(), "鲍勃", "b.png")));
+
+        java.util.List<org.example.cloudcommon.AccountSummary> result = internalController.batch(java.util.List.of(1, 2));
+
+        assertEquals(2, result.size());
+        assertEquals("爱丽丝", result.get(0).nickname());
+        assertEquals("a.png", result.get(0).avatar());
     }
 }
