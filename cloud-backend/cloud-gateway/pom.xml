@@ -65,6 +65,12 @@
 			<artifactId>spring-cloud-alibaba-sentinel-datasource</artifactId>
 		</dependency>
 
+		<!-- Nacos data sources are optional in the Alibaba Sentinel starter. -->
+		<dependency>
+			<groupId>com.alibaba.csp</groupId>
+			<artifactId>sentinel-datasource-nacos</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

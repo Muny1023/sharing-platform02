@@ -25,6 +25,11 @@ class CloudGatewayApplicationTests {
 	}
 
 	@Test
+	void sentinelNacosDataSourceIsAvailable() throws ClassNotFoundException {
+		Class.forName("com.alibaba.csp.sentinel.datasource.nacos.NacosDataSource");
+	}
+
+	@Test
 	void accountRoutesUseServiceDiscovery() throws Exception {
 		Properties properties = new Properties();
 		Path config = Path.of("src/main/resources/application.properties");
