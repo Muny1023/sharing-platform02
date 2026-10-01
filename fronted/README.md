@@ -1,12 +1,12 @@
 # 资源分享社区前端
 
-从源项目 `my-project-frontend` 迁入，保留 Vue 3、TypeScript、Element Plus、Vue Router 和原业务页面。此目录是当前业务前端；旁边的 `fronted` 是旧 Vue 模板，不是业务入口。
+从源项目 `my-project-frontend` 迁入，保留 Vue 3、TypeScript、Element Plus、Vue Router 和原业务页面。此目录 `fronted` 是当前业务前端入口，原默认 Vue 模板已不再作为启动入口。
 
 ## 在 IDEA 启动
 
 1. 使用 Node.js `^22.18.0` 或 `>=24.12.0`。
 2. 首次在此目录的终端执行 `npm ci`。
-3. 打开本目录 `package.json`，点击 `scripts.dev` 左侧运行按钮。运行配置中的 package.json 路径必须指向 `myproject01/frontend/package.json`，不要选 `fronted/package.json`。
+3. 打开本目录 `package.json`，点击 `scripts.dev` 左侧运行按钮。运行配置中的 package.json 路径必须指向 `myproject01/fronted/package.json`。
 4. 打开运行日志中的本地地址，通常为 `http://localhost:5173`。端口被占用时 Vite 自动选择下一个端口。
 
 也可以在此目录执行 `npm run dev`。
