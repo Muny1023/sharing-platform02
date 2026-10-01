@@ -46,6 +46,12 @@ class CloudGatewayApplicationTests {
 				properties.getProperty("spring.cloud.gateway.server.webflux.routes[8].predicates[0]"));
 		assertTrue(properties.getProperty("spring.cloud.sentinel.transport.dashboard")
 				.contains("localhost:8858"));
+		assertEquals("http://localhost:5173", properties.getProperty(
+				"spring.cloud.gateway.server.webflux.globalcors.cors-configurations.[/**].allowedOrigins"));
+		assertEquals("GET,POST,PUT,DELETE,OPTIONS", properties.getProperty(
+				"spring.cloud.gateway.server.webflux.globalcors.cors-configurations.[/**].allowedMethods"));
+		assertEquals("true", properties.getProperty(
+				"spring.cloud.gateway.server.webflux.globalcors.add-to-simple-url-handler-mapping"));
 		assertEquals("gw-flow", properties.getProperty("spring.cloud.sentinel.datasource.gateway-flow.nacos.rule-type"));
 		assertEquals("429", properties.getProperty("spring.cloud.sentinel.scg.fallback.response-status"));
 	}
