@@ -46,7 +46,7 @@ class CloudGatewayApplicationTests {
 				properties.getProperty("spring.cloud.gateway.server.webflux.routes[8].predicates[0]"));
 		assertTrue(properties.getProperty("spring.cloud.sentinel.transport.dashboard")
 				.contains("localhost:8858"));
-		assertEquals("http://localhost:5173", properties.getProperty(
+		assertEquals("http://localhost:5173,http://127.0.0.1:5173", properties.getProperty(
 				"spring.cloud.gateway.server.webflux.globalcors.cors-configurations.[/**].allowedOrigins"));
 		assertEquals("GET,POST,PUT,DELETE,OPTIONS", properties.getProperty(
 				"spring.cloud.gateway.server.webflux.globalcors.cors-configurations.[/**].allowedMethods"));
