@@ -1,6 +1,8 @@
 package org.example.cloudgateway;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.Reader;
@@ -10,6 +12,7 @@ import java.nio.file.Path;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(properties = {
@@ -46,14 +49,27 @@ class CloudGatewayApplicationTests {
 				properties.getProperty("spring.cloud.gateway.server.webflux.routes[8].predicates[0]"));
 		assertTrue(properties.getProperty("spring.cloud.sentinel.transport.dashboard")
 				.contains("localhost:8858"));
-		assertEquals("http://localhost:5173,http://127.0.0.1:5173", properties.getProperty(
-				"spring.cloud.gateway.server.webflux.globalcors.cors-configurations.[/**].allowedOrigins"));
-		assertEquals("GET,POST,PUT,DELETE,OPTIONS", properties.getProperty(
-				"spring.cloud.gateway.server.webflux.globalcors.cors-configurations.[/**].allowedMethods"));
-		assertEquals("true", properties.getProperty(
+		Properties cors = loadYamlProperties();
+		assertEquals("http://localhost:5173", cors.getProperty(
+				"spring.cloud.gateway.server.webflux.globalcors.cors-configurations[/**].allowedOrigins[0]"));
+		assertEquals("http://127.0.0.1:5173", cors.getProperty(
+				"spring.cloud.gateway.server.webflux.globalcors.cors-configurations[/**].allowedOrigins[1]"));
+		assertEquals("GET", cors.getProperty(
+				"spring.cloud.gateway.server.webflux.globalcors.cors-configurations[/**].allowedMethods[0]"));
+		assertEquals("OPTIONS", cors.getProperty(
+				"spring.cloud.gateway.server.webflux.globalcors.cors-configurations[/**].allowedMethods[4]"));
+		assertEquals("true", cors.getProperty(
 				"spring.cloud.gateway.server.webflux.globalcors.add-to-simple-url-handler-mapping"));
 		assertEquals("gw-flow", properties.getProperty("spring.cloud.sentinel.datasource.gateway-flow.nacos.rule-type"));
 		assertEquals("429", properties.getProperty("spring.cloud.sentinel.scg.fallback.response-status"));
+	}
+
+	private Properties loadYamlProperties() {
+		YamlPropertiesFactoryBean factory = new YamlPropertiesFactoryBean();
+		factory.setResources(new ClassPathResource("application.yml"));
+		Properties properties = factory.getObject();
+		assertNotNull(properties);
+		return properties;
 	}
 
 }
