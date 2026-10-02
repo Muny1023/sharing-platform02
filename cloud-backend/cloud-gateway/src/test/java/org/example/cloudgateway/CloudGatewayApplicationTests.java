@@ -61,6 +61,14 @@ class CloudGatewayApplicationTests {
 		assertEquals("true", cors.getProperty(
 				"spring.cloud.gateway.server.webflux.globalcors.add-to-simple-url-handler-mapping"));
 		assertEquals("gw-flow", properties.getProperty("spring.cloud.sentinel.datasource.gateway-flow.nacos.rule-type"));
+		assertEquals("${NACOS_USERNAME:nacos}", properties.getProperty(
+				"spring.cloud.sentinel.datasource.gateway-flow.nacos.username"));
+		assertEquals("${NACOS_PASSWORD:123456}", properties.getProperty(
+				"spring.cloud.sentinel.datasource.gateway-flow.nacos.password"));
+		assertEquals("${NACOS_USERNAME:nacos}", properties.getProperty(
+				"spring.cloud.sentinel.datasource.gateway-degrade.nacos.username"));
+		assertEquals("${NACOS_PASSWORD:123456}", properties.getProperty(
+				"spring.cloud.sentinel.datasource.gateway-degrade.nacos.password"));
 		assertEquals("429", properties.getProperty("spring.cloud.sentinel.scg.fallback.response-status"));
 	}
 
