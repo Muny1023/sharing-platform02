@@ -63,6 +63,14 @@ class ArchitectureDocumentationTest {
 			assertTrue(configImport.endsWith(".yaml"));
 			assertTrue(properties.containsKey("spring.cloud.nacos.discovery.server-addr"));
 			assertTrue(properties.containsKey("spring.cloud.nacos.config.server-addr"));
+			assertEquals("${NACOS_USERNAME:nacos}",
+					properties.getProperty("spring.cloud.nacos.discovery.username"));
+			assertEquals("${NACOS_PASSWORD:123456}",
+					properties.getProperty("spring.cloud.nacos.discovery.password"));
+			assertEquals("${NACOS_USERNAME:nacos}",
+					properties.getProperty("spring.cloud.nacos.config.username"));
+			assertEquals("${NACOS_PASSWORD:123456}",
+					properties.getProperty("spring.cloud.nacos.config.password"));
 		}
 	}
 }
