@@ -46,9 +46,11 @@ class NotebookControlTest(unittest.TestCase):
             if cell.get("cell_type") == "code"
         )
 
-        self.assertIn("ai_process = None", code)
+        self.assertIn("globals().get('ai_process')", code)
+        self.assertIn("globals().get('ai_process_owned', False)", code)
         self.assertIn("Path.cwd() / 'ai-service'", code)
         self.assertIn("Path.cwd().parent / 'ai-service'", code)
+        self.assertIn("AI 服务正在运行，但不是当前 Notebook 启动的进程", code)
 
 if __name__ == "__main__":
     unittest.main()
