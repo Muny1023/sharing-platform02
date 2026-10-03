@@ -17,9 +17,9 @@ public final class SeataRollbackClient {
     }
 
     public static void main(String[] args) throws Exception {
-        String token = token(args);
-        String baseUrl = value(args, 1, "SEATA_TEST_BASE_URL", DEFAULT_BASE_URL);
-        String demoKey = value(args, 2, "SEATA_TEST_DEMO_KEY",
+        String token = value(args, 0, SeataTestConfig.SEATA_TEST_JWT);
+        String baseUrl = value(args, 1, SeataTestConfig.SEATA_TEST_BASE_URL, DEFAULT_BASE_URL);
+        String demoKey = value(args, 2, SeataTestConfig.SEATA_TEST_ROLLBACK_DEMO_KEY,
                 "seata-rollback-" + LocalDateTime.now().format(KEY_TIME));
         String body = """
                 {
@@ -47,22 +47,22 @@ public final class SeataRollbackClient {
         return HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    private static String token(String[] args) {
-        String token = value(args, 0, "SEATA_TEST_JWT", "");
-        if (token.isBlank()) {
-            throw new IllegalArgumentException(
-                    "请把登录后的 JWT 放在第一个参数，或设置 SEATA_TEST_JWT 环境变量");
-        }
-        return token;
-    }
-
     private static String bearer(String token) {
         return token.startsWith("Bearer ") ? token : "Bearer " + token;
     }
 
-    private static String value(String[] args, int index, String environment, String fallback) {
-        if (args.length > index && args[index] != null && !args[index].isBlank()) return args[index];
-        String value = System.getenv(environment);
-        return value == null || value.isBlank() ? fallback : value;
+    private static String value(String[] args, int index, String configured) {
+        String value = args.length > index && args[index] != null && !args[index].isBlank()
+                ? args[index] : configured;
+        if (value.isBlank()) {
+            throw new IllegalArgumentException("请在 SeataTestConfig 中填写 JWT");
+        }
+        return value;
+    }
+
+    private static String value(String[] args, int index, String configured, String fallback) {
+        String value = args.length > index && args[index] != null && !args[index].isBlank()
+                ? args[index] : configured;
+        return value.isBlank() ? fallback : value;
     }
 }
