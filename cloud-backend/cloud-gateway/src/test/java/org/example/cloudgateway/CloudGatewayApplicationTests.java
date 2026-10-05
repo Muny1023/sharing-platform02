@@ -60,6 +60,12 @@ class CloudGatewayApplicationTests {
 				"spring.cloud.gateway.server.webflux.globalcors.cors-configurations[/**].allowedMethods[4]"));
 		assertEquals("true", cors.getProperty(
 				"spring.cloud.gateway.server.webflux.globalcors.add-to-simple-url-handler-mapping"));
+		assertEquals("response", cors.getProperty("spring.cloud.sentinel.scg.fallback.mode"));
+		assertEquals("429", cors.getProperty("spring.cloud.sentinel.scg.fallback.response-status"));
+		assertEquals("application/json;charset=UTF-8",
+				cors.getProperty("spring.cloud.sentinel.scg.fallback.content-type"));
+		assertEquals("{\"code\":429,\"data\":null,\"message\":\"请求量过大，请稍后重试\"}",
+				cors.getProperty("spring.cloud.sentinel.scg.fallback.response-body"));
 		assertEquals("gw-flow", properties.getProperty("spring.cloud.sentinel.datasource.gateway-flow.nacos.rule-type"));
 		assertEquals("${NACOS_USERNAME:nacos}", properties.getProperty(
 				"spring.cloud.sentinel.datasource.gateway-flow.nacos.username"));
@@ -69,7 +75,6 @@ class CloudGatewayApplicationTests {
 				"spring.cloud.sentinel.datasource.gateway-degrade.nacos.username"));
 		assertEquals("${NACOS_PASSWORD:123456}", properties.getProperty(
 				"spring.cloud.sentinel.datasource.gateway-degrade.nacos.password"));
-		assertEquals("429", properties.getProperty("spring.cloud.sentinel.scg.fallback.response-status"));
 	}
 
 	private Properties loadYamlProperties() {

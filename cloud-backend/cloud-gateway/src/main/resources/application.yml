@@ -19,3 +19,10 @@ spring:
                 allowedHeaders:
                   - '*'
                 allowCredentials: true
+    sentinel:
+      scg:
+        fallback:
+          mode: response
+          response-status: 429
+          content-type: 'application/json;charset=UTF-8'
+          response-body: '{"code":429,"data":null,"message":"请求量过大，请稍后重试"}'
