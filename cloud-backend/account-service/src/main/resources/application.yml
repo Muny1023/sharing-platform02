@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: account-service
+  config:
+    import: optional:nacos:${spring.application.name}.yaml
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:localhost:8848}
+        username: ${NACOS_USERNAME:nacos}
+        password: ${NACOS_PASSWORD:123456}
+      config:
+        server-addr: ${NACOS_SERVER_ADDR:localhost:8848}
+        username: ${NACOS_USERNAME:nacos}
+        password: ${NACOS_PASSWORD:123456}
+    internal:
+      token: ${INTERNAL_SERVICE_TOKEN:dev-internal-token}
+  datasource:
+    url: '${ACCOUNT_DB_URL:jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai}'
+    username: ${ACCOUNT_DB_USERNAME:root}
+    password: ${ACCOUNT_DB_PASSWORD:123456}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:admin}
+    password: ${RABBITMQ_PASSWORD:admin}
+    virtual-host: '${RABBITMQ_VHOST:/}'
+  security:
+    jwt:
+      key: ${JWT_KEY:abcdefghijk}
+      expire: ${JWT_EXPIRE_DAYS:7}
+seata:
+  enabled: ${SEATA_ENABLED:true}
+  application-id: ${spring.application.name}
+  tx-service-group: ${SEATA_TX_SERVICE_GROUP:default_tx_group}
+  enable-auto-data-source-proxy: true
+  data-source-proxy-mode: AT
+  registry:
+    type: file
+  config:
+    type: file
+  service:
+    vgroup-mapping:
+      default_tx_group: ${SEATA_SERVICE_GROUP:default}
+    grouplist:
+      default: ${SEATA_SERVER_ADDR:127.0.0.1:8091}
+server:
+  port: 8081
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true

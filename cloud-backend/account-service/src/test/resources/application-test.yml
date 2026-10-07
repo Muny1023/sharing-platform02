@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: account-service-test
+  main:
+    web-application-type: servlet
+  datasource:
+    url: 'jdbc:h2:mem:account;MODE=MySQL;DB_CLOSE_DELAY=-1'
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+  security:
+    jwt:
+      key: test-key
+      expire: 7
+seata:
+  enabled: false

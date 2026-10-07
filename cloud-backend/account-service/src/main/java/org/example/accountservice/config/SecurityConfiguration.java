@@ -77,7 +77,7 @@ public class SecurityConfiguration {
     private void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                          AuthenticationException exception) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        write(response, RestBean.unauthorized(exception.getMessage()));
+        write(response, RestBean.unauthorized("用户名或密码错误"));
     }
 
     private void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -93,13 +93,13 @@ public class SecurityConfiguration {
     private void onUnauthorized(HttpServletRequest request, HttpServletResponse response,
                                 AuthenticationException exception) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        write(response, RestBean.unauthorized(exception.getMessage()));
+        write(response, RestBean.unauthorized("请先登录"));
     }
 
     private void onAccessDenied(HttpServletRequest request, HttpServletResponse response,
                                 AccessDeniedException exception) throws IOException {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        write(response, RestBean.forbidden(exception.getMessage()));
+        write(response, RestBean.forbidden("没有权限执行此操作"));
     }
 
     private void write(HttpServletResponse response, RestBean<?> body) throws IOException {

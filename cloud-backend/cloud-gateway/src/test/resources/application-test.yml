@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: cloud-gateway-test
+  main:
+    web-application-type: reactive

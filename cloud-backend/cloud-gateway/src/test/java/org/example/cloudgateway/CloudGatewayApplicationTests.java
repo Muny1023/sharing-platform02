@@ -5,10 +5,6 @@ import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(properties = {
-		"spring.config.location=classpath:/application-test.properties",
+		"spring.config.location=classpath:/application-test.yml",
 		"spring.cloud.nacos.discovery.enabled=false",
 		"spring.cloud.nacos.config.enabled=false",
 		"spring.autoconfigure.exclude=com.alibaba.cloud.nacos.NacosConfigAutoConfiguration,com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration,com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration,com.alibaba.cloud.nacos.registry.NacosServiceRegistryAutoConfiguration,com.alibaba.cloud.nacos.NacosServiceAutoConfiguration"
@@ -34,11 +30,7 @@ class CloudGatewayApplicationTests {
 
 	@Test
 	void accountRoutesUseServiceDiscovery() throws Exception {
-		Properties properties = new Properties();
-		Path config = Path.of("src/main/resources/application.properties");
-		try (Reader reader = Files.newBufferedReader(config, StandardCharsets.UTF_8)) {
-			properties.load(reader);
-		}
+		Properties properties = loadYamlProperties();
 		assertEquals("lb://account-service", properties.getProperty("spring.cloud.gateway.server.webflux.routes[0].uri"));
 		assertEquals("lb://account-service", properties.getProperty("spring.cloud.gateway.server.webflux.routes[1].uri"));
 		assertEquals("lb://account-service", properties.getProperty("spring.cloud.gateway.server.webflux.routes[2].uri"));
@@ -51,13 +43,13 @@ class CloudGatewayApplicationTests {
 				.contains("localhost:8858"));
 		Properties cors = loadYamlProperties();
 		assertEquals("http://localhost:5173", cors.getProperty(
-				"spring.cloud.gateway.server.webflux.globalcors.cors-configurations[/**].allowedOrigins[0]"));
+				"spring.cloud.gateway.server.webflux.globalcors.cors-configurations[/**].allowed-origins[0]"));
 		assertEquals("http://127.0.0.1:5173", cors.getProperty(
-				"spring.cloud.gateway.server.webflux.globalcors.cors-configurations[/**].allowedOrigins[1]"));
+				"spring.cloud.gateway.server.webflux.globalcors.cors-configurations[/**].allowed-origins[1]"));
 		assertEquals("GET", cors.getProperty(
-				"spring.cloud.gateway.server.webflux.globalcors.cors-configurations[/**].allowedMethods[0]"));
+				"spring.cloud.gateway.server.webflux.globalcors.cors-configurations[/**].allowed-methods[0]"));
 		assertEquals("OPTIONS", cors.getProperty(
-				"spring.cloud.gateway.server.webflux.globalcors.cors-configurations[/**].allowedMethods[4]"));
+				"spring.cloud.gateway.server.webflux.globalcors.cors-configurations[/**].allowed-methods[4]"));
 		assertEquals("true", cors.getProperty(
 				"spring.cloud.gateway.server.webflux.globalcors.add-to-simple-url-handler-mapping"));
 		assertEquals("response", cors.getProperty("spring.cloud.sentinel.scg.fallback.mode"));
