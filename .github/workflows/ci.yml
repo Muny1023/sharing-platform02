@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: Run backend tests
+        run: mvn -f cloud-backend/pom.xml test "-Dtest=!LoadBalancerVerificationTest"
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.18.0'
+          cache: npm
+          cache-dependency-path: fronted/package-lock.json
+      - name: Install frontend dependencies
+        working-directory: fronted
+        run: npm ci
+      - name: Run frontend tests
+        working-directory: fronted
+        run: npm test
+      - name: Build frontend
+        working-directory: fronted
+        run: npm run build
