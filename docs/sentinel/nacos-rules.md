@@ -51,4 +51,8 @@ Data ID：`cloud-gateway-degrade`
 ]
 ```
 
+当前规则使用 `grade: 1`，表示异常比例策略；`count: 0.5` 表示在最小请求数达到 20 且统计窗口内异常比例达到 50% 后熔断 10 秒。验证时应让 `content-post` 下游产生连接异常，随后请求会收到 HTTP 429 和配置的 `RestBean` 响应。
+
+`slowRatioThreshold` 仅用于慢请求策略（`grade: 0`），在当前异常比例规则中不会参与判断。如果要验证慢请求熔断，应将规则改为 `grade: 0`，并把 `count` 设置为毫秒级慢请求阈值。
+
 网关被 Sentinel 限流或熔断时返回 `RestBean` 结构，HTTP 状态为 `429`。规则可以在 Nacos 控制台修改，客户端会动态刷新。

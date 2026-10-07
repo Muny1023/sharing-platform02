@@ -1,0 +1,14 @@
+spring:
+  mail:
+    host: smtp.163.com
+    port: 465
+    username: replace-with-mailbox
+    password: replace-with-smtp-authorization-code
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          starttls:
+            enable: false

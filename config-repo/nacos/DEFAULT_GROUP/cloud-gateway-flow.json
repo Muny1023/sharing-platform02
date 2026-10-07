@@ -1,0 +1,22 @@
+[
+  {
+    "resource": "account-auth",
+    "resourceMode": 0,
+    "grade": 1,
+    "count": 10,
+    "intervalSec": 3,
+    "controlBehavior": 0,
+    "burst": 0,
+    "strategy": 0
+  },
+  {
+    "resource": "api",
+    "resourceMode": 0,
+    "grade": 1,
+    "count": 100,
+    "intervalSec": 1,
+    "controlBehavior": 0,
+    "burst": 0,
+    "strategy": 0
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "resource": "content-post",
+    "grade": 1,
+    "count": 0.5,
+    "timeWindow": 10,
+    "minRequestAmount": 20,
+    "statIntervalMs": 10000,
+    "slowRatioThreshold": 1.0
+  }
+]
