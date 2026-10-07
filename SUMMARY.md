@@ -99,7 +99,7 @@ Node 版本约束为 `^22.18.0 || >=24.12.0`。
 ## 7. 当前已知问题和下一步
 
 1. 邮箱授权码已经通过本地 profile 隔离，上传前必须确认 `application-local.yml` 未被 Git 跟踪，并轮换曾经暴露过的授权码。
-2. `LoadBalancerVerificationTest` 和 Sentinel 熔断验证需要本地 Nacos、网关及业务实例，不能作为无依赖 CI 测试。
+2. `github-clean` 分支只保留 `LoadBalancerVerificationTest`，其余测试保留在 `master`。该手工测试需要本地 Nacos 和两个账号服务实例；CI 仅执行后端编译和前端构建。
 3. `ai-service` 是独立 Python/FastAPI 微服务，不加入 Maven `<modules>`；通过 `JAVA_SERVICE_URL` 调用 Java 内容服务内部接口，并使用 `AI_SERVICE_TOKEN` 做服务间鉴权。
 
 ## 8. 建议的目标结构

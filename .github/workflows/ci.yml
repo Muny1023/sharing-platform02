@@ -16,8 +16,8 @@ jobs:
           distribution: temurin
           java-version: '17'
           cache: maven
-      - name: Run backend tests
-        run: mvn -f cloud-backend/pom.xml test "-Dtest=!LoadBalancerVerificationTest"
+      - name: Compile backend and manual verification test
+        run: mvn -B -f cloud-backend/pom.xml clean test-compile
 
   frontend:
     runs-on: ubuntu-latest
@@ -33,9 +33,6 @@ jobs:
       - name: Install frontend dependencies
         working-directory: fronted
         run: npm ci
-      - name: Run frontend tests
-        working-directory: fronted
-        run: npm test
       - name: Build frontend
         working-directory: fronted
         run: npm run build
