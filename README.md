@@ -5,7 +5,7 @@
 ## 环境要求
 
 - JDK 17（当前 Spring Boot 4.0.8；JDK 24 也可用于本地运行）
-- Maven 3.9+
+- Maven 3.9+（需自行安装；本分支不提供 Maven Wrapper）
 - Node.js 22.18+ 或 24.12+
 - MySQL 8、Redis、RabbitMQ
 - Nacos 2.x/3.x（默认 `localhost:8848`）

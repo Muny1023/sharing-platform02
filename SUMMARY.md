@@ -32,13 +32,11 @@ myproject01/
 │   ├── account-service/             账号服务骨架
 │   ├── content-service/             内容服务骨架，当前存在但未列入聚合模块
 │   ├── notification-service/        通知服务骨架，当前存在但未列入聚合模块
-│   └── .mvn/                        Maven Wrapper 文件
 ├── fronted/                         Vue 前端模板，目录名暂时拼写为 fronted
 ├── ai-service/                      独立 Python AI 微服务
 ├── config-repo/                     脱敏的 Nacos 配置副本
 ├── deploy/                          可选的 Docker Compose 配置
 ├── .idea/                           IntelliJ IDEA 项目配置
-├── .mvn/                            根项目 Maven Wrapper 文件
 └── .git/                            Git 仓库元数据
 ```
 
