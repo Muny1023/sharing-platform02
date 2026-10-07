@@ -98,10 +98,11 @@ uvicorn app.main:app --host 127.0.0.1 --port 8000
 
 ## 验证命令
 
-运行后端测试：
+运行后端测试（排除需要外部 Nacos 实例的手工负载均衡测试）：
 
 ```powershell
-mvn -pl cloud-backend -am test
+cd cloud-backend
+mvn test "-Dtest=!LoadBalancerVerificationTest"
 ```
 
 只验证 Gateway 配置：
