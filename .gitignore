@@ -1,0 +1,24 @@
+# IDE metadata
+.idea/
+*.iml
+.vscode/
+
+# Build and test output
+**/target/
+**/build/
+**/__pycache__/
+**/.pytest_cache/
+
+# Local Python environments
+**/.conda/
+**/.venv/
+**/venv/
+
+# Local secrets and overrides
+.env
+.env.*
+!.env.example
+**/application-local.yml
+
+# Temporary verification artifacts
+/tmp-*.jar
