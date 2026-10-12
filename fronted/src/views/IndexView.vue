@@ -2,6 +2,8 @@
 import { onMounted, onUnmounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { get, logout } from '@/net'
+import { offlinePreview } from '@/config/preview'
+import { createPreviewPosts, createPreviewComments } from '@/preview/data'
 
 interface PostItem {
   id: number
@@ -41,6 +43,7 @@ let unreadTimer: number | undefined
 function loadUnreadCount() { get('/api/notification/unread-count', {}, res => { unreadCount.value = Number(res.data?.data ?? 0) }) }
 
 function loadPosts() {
+  if (offlinePreview) { loadPreviewPosts(); return }
   loading.value = true
   get('/api/post/list',
     { page: page.current, size: page.size, sort: sort.value },
@@ -56,11 +59,25 @@ function loadPosts() {
 }
 
 function search() {
+  if (offlinePreview) { page.current = 1; loadPreviewPosts(keyword.value.trim()); return }
   if (!keyword.value.trim()) { loadPosts(); return }
   searching.value = true
   get(searchMode.value === 'posts' ? '/api/post/search' : '/api/post/search-comments', { keyword: keyword.value.trim(), page: page.current, size: page.size }, (res) => {
     const data = res.data?.data; posts.value = data?.items ?? []; page.total = data?.total ?? 0; searching.value = false
   }, () => { searching.value = false }, () => { searching.value = false })
+}
+
+function loadPreviewPosts(query = '') {
+  let items = createPreviewPosts()
+  if (query) {
+    items = items.filter(item => (searchMode.value === 'comments'
+      ? createPreviewComments(item.id).map(comment => comment.content).join(' ')
+      : `${item.title} ${item.content}`).toLocaleLowerCase().includes(query.toLocaleLowerCase()))
+  }
+  items.sort((a, b) => sort.value === 'hot' ? b.likeCount - a.likeCount
+    : sort.value === 'oldest' ? a.createTime.localeCompare(b.createTime) : b.createTime.localeCompare(a.createTime))
+  page.total = items.length
+  posts.value = items.slice((page.current - 1) * page.size, page.current * page.size)
 }
 
 function switchSort(value: 'latest' | 'hot' | 'oldest') {
@@ -88,6 +105,7 @@ function handleLogout() {
 
 onMounted(() => {
   loadPosts()
+  if (offlinePreview) return
   get('/api/user/me', {},
     (res) => { me.value = res.data?.data ?? null },
   )
@@ -104,7 +122,8 @@ onUnmounted(() => { if (unreadTimer) window.clearInterval(unreadTimer) })
       <div class="topbar-inner">
         <button class="brand" @click="router.push('/index')"><span class="brand-mark">✦</span><span>NEXUS</span><small>RESOURCE GRID</small></button>
         <div class="system-status"><i></i> SYSTEM ONLINE <span>·</span> {{ posts.length.toString().padStart(2, '0') }} SIGNALS</div>
-        <nav class="topbar-right">
+        <span v-if="offlinePreview" class="system-status">本地预览 · 示例数据</span>
+        <nav v-else class="topbar-right">
           <button class="nav-btn user-menu" @click="router.push('/my/posts')">{{ me?.nickname || me?.username || 'CONNECTING...' }}</button>
           <button class="nav-btn" @click="router.push('/notifications')">通知<span v-if="unreadCount > 0" class="badge">{{ unreadCount > 99 ? '99+' : unreadCount }}</span></button>
           <button class="nav-btn" @click="router.push('/my/favorites')">收藏</button>
@@ -131,13 +150,13 @@ onUnmounted(() => { if (unreadTimer) window.clearInterval(unreadTimer) })
         <section class="stream-panel">
           <div class="section-heading"><div><span class="section-kicker">// SIGNAL STREAM</span><h2>最新资源</h2></div><div class="sort-bar"><button v-for="option in [{ value: 'latest', label: '最新' }, { value: 'hot', label: '最热' }, { value: 'oldest', label: '最早' }]" :key="option.value" class="sort-btn" :class="{ active: sort === option.value }" @click="switchSort(option.value as 'latest' | 'hot' | 'oldest')">{{ option.label }}</button></div></div>
           <div class="search-bar"><span class="search-icon">⌕</span><select v-model="searchMode"><option value="posts">帖子搜索</option><option value="comments">评论搜索</option></select><input v-model="keyword" placeholder="检索标题、内容或评论" @keyup.enter="search"><button @click="search">检索 <span>↗</span></button><button v-if="keyword" class="clear-btn" @click="keyword='';loadPosts()">清除</button></div>
-          <p v-if="!loading && posts.length === 0" class="empty-tip">暂无信号。点击右上角「发布资源」发送第一个资源。</p>
+          <p v-if="!loading && posts.length === 0" class="empty-tip">{{ offlinePreview ? '未找到匹配的示例资源。' : '暂无信号。点击右上角「发布资源」发送第一个资源。' }}</p>
           <article v-for="(post, index) in posts" :key="post.id" class="post-card" @click="router.push(`/post/${post.postId ?? post.id}`)">
             <div class="post-index">{{ String(index + 1).padStart(2, '0') }}</div><div class="post-body"><div class="post-card-top"><span class="signal-tag">SIGNAL / {{ post.authorNickname || 'ANONYMOUS' }}</span><span class="meta-time">{{ post.createTime }}</span></div><h2 class="post-title">{{ post.postTitle ?? post.title }}</h2><p class="post-excerpt">{{ excerpt(post.content) }}</p><div class="post-meta"><span>♥ {{ post.likeCount }}</span><span>◌ {{ post.commentCount }}</span><span>✦ {{ post.favoriteCount ?? 0 }}</span><span class="open-link">OPEN SIGNAL ↗</span></div></div><div class="post-arrow">↗</div>
           </article>
           <div v-if="page.total > page.size" class="pager"><button :disabled="page.current <= 1 || loading" @click="handlePageChange(page.current - 1)">←</button><span class="pager-info">{{ String(page.current).padStart(2, '0') }} / {{ String(Math.ceil(page.total / page.size)).padStart(2, '0') }}</span><button :disabled="page.current >= Math.ceil(page.total / page.size) || loading" @click="handlePageChange(page.current + 1)">→</button></div>
         </section>
-        <aside class="side-panel"><div class="side-label">NEXUS / NOTE</div><h3>把你的<br><span>想法发射</span>出去</h3><p>一个开放的资源信号站。分享工具、灵感、文章和任何值得被看见的东西。</p><button class="side-cta" @click="router.push('/post/new')">创建新信号 <span>↗</span></button><div class="side-footer"><span>COORDINATES</span><strong>31°14'52.4" N<br>121°28'06.7" E</strong></div></aside>
+        <aside class="side-panel"><div class="side-label">NEXUS / NOTE</div><h3>把你的<br><span>想法发射</span>出去</h3><p>一个开放的资源信号站。分享工具、灵感、文章和任何值得被看见的东西。</p><button class="side-cta" :disabled="offlinePreview" @click="router.push('/post/new')">{{ offlinePreview ? '示例资源 · 点击帖子查看详情' : '创建新信号' }} <span>↗</span></button><div class="side-footer"><span>COORDINATES</span><strong>31°14'52.4" N<br>121°28'06.7" E</strong></div></aside>
       </div>
     </main>
     <footer class="site-footer"><span>THE NETWORK IS ALIVE</span><span>SCROLL <b>›››</b></span></footer>

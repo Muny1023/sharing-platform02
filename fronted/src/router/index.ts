@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import WelcomeView from '@/views/WelcomeView.vue'
 import LoginPage from '@/views/welcome/LoginPage.vue'
 import { unauthorized } from '@/net'
+import { offlinePreview } from '@/config/preview'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,6 +30,16 @@ const router = createRouter({
 
 router.beforeEach((to, _from, next) => {
   const isWelcome = typeof to.name === 'string' && to.name.startsWith('welcome-')
+  if (offlinePreview) {
+    if (to.name === 'welcome-login') {
+      next('/index')
+      return
+    }
+    if (to.name === 'index' || to.name === 'post-detail') {
+      next()
+      return
+    }
+  }
 
   if (isWelcome) {
     if (!unauthorized()) {

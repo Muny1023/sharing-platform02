@@ -3,6 +3,8 @@ import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { aiChat, get, post as sendPost, remove } from '@/net'
+import { offlinePreview as previewMode } from '@/config/preview'
+import { createPreviewPosts, createPreviewComments } from '@/preview/data'
 
 interface PostDetail {
   id: number
@@ -182,6 +184,12 @@ function submitReply(parentId: number) {
 }
 
 onMounted(() => {
+  if (previewMode) {
+    post.value = createPreviewPosts().find(item => item.id === postId.value) ?? null
+    notFound.value = !post.value
+    comments.value = post.value ? createPreviewComments(postId.value) : []
+    return
+  }
   loadPost()
   loadPostLikeStatus()
   loadFavorite()
@@ -200,6 +208,7 @@ onMounted(() => {
     </header>
 
     <main class="detail-main">
+      <p v-if="previewMode" class="preview-notice">本地预览模式 · 无需登录或启动后端 · 当前内容为示例数据</p>
       <div v-if="notFound" class="empty-tip">帖子不存在</div>
       <div v-else-if="tombstone" class="tombstone"><h1>该帖子已被作者删除</h1><p>原帖内容已不可用</p><button class="back-btn" @click="router.push('/index')">返回帖子流</button></div>
 
@@ -215,7 +224,7 @@ onMounted(() => {
           <a :href="post.resourceUrl" target="_blank" rel="noopener noreferrer" class="resource-link">
             🔗 获取资源：{{ post.resourceUrl }}
           </a>
-          <div class="post-actions">
+          <div v-if="!previewMode" class="post-actions">
             <button class="like-btn" :class="{ liked: postLiked }" @click="togglePostLike">
               {{ postLiked ? '已赞' : '点赞' }} · {{ post.likeCount }}
             </button>
@@ -230,7 +239,7 @@ onMounted(() => {
         <section class="comment-panel">
           <h2 class="panel-title">评论区</h2>
 
-          <div class="comment-composer">
+          <div v-if="!previewMode" class="comment-composer">
             <textarea
               v-model="commentText"
               class="composer-input"
@@ -255,7 +264,7 @@ onMounted(() => {
                 <span class="comment-time">{{ comment.createTime }}</span>
               </div>
               <p class="comment-body">{{ comment.content }}</p>
-              <div class="comment-ops">
+              <div v-if="!previewMode" class="comment-ops">
                 <button
                   class="op-btn"
                   :class="{ liked: likedCommentIds.has(comment.id) }"
@@ -287,7 +296,7 @@ onMounted(() => {
                 <span class="comment-time">{{ reply.createTime }}</span>
               </div>
               <p class="comment-body">{{ reply.content }}</p>
-              <div class="comment-ops">
+              <div v-if="!previewMode" class="comment-ops">
                 <button
                   class="op-btn"
                   :class="{ liked: likedCommentIds.has(reply.id) }"
@@ -303,6 +312,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.preview-notice { padding:12px 16px; border:1px solid #84b9b2; background:#e9f6f3; color:#326b66; font-size:13px; border-radius:6px; }
 .detail-wrapper {
   display: flex;
   flex-direction: column;
