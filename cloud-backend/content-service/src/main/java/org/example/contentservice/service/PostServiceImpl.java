@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
+import org.example.cloudcommon.AccountSummary;
+import org.example.contentservice.client.AccountClient;
 import org.example.contentservice.entity.Post;
 import org.example.contentservice.entity.PostTombstone;
 import org.example.contentservice.entity.request.PostCreateRequest;
@@ -19,7 +21,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements PostService {
@@ -35,6 +41,9 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
 
     @Resource
     private FavoriteMapper favoriteMapper;
+
+    @Resource
+    private AccountClient accountClient;
 
     @Override
     public String createPost(Integer authorId, PostCreateRequest request) {
@@ -103,21 +112,36 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
     public PostDetailResponse getPostDetail(Integer id) {
         Post post = getById(id);
         if (post == null) return null;
-        return new PostDetailResponse(post.getId(), post.getAuthorId(), nickname(post.getAuthorId()),
+        Map<Integer, String> names = loadAuthorNames(List.of(post));
+        return new PostDetailResponse(post.getId(), post.getAuthorId(), names.getOrDefault(post.getAuthorId(), "未知用户"),
                 post.getTitle(), post.getContent(), post.getResourceUrl(), post.getLikeCount(),
                 post.getCommentCount(), post.getCreateTime(), post.getUpdateTime(),
                 Boolean.TRUE.equals(post.getDeleted()), post.getFavoriteCount());
     }
 
     private PageResponse<PostListResponse> toPage(Page<Post> page) {
+        Map<Integer, String> names = loadAuthorNames(page.getRecords());
         return new PageResponse<>(page.getCurrent(), page.getSize(), page.getTotal(),
                 page.getRecords().stream().map(post -> new PostListResponse(post.getId(), post.getAuthorId(),
-                        nickname(post.getAuthorId()), post.getTitle(), post.getContent(), post.getResourceUrl(),
+                        names.getOrDefault(post.getAuthorId(), "未知用户"), post.getTitle(), post.getContent(), post.getResourceUrl(),
                         post.getLikeCount(), post.getCommentCount(), post.getCreateTime(),
                         Boolean.TRUE.equals(post.getDeleted()), post.getFavoriteCount())).toList());
     }
 
-    private String nickname(Integer authorId) {
-        return authorId == null ? "未知用户" : "用户" + authorId;
+    private Map<Integer, String> loadAuthorNames(List<Post> posts) {
+        List<Integer> ids = posts.stream().map(Post::getAuthorId).filter(Objects::nonNull).distinct().toList();
+        if (ids.isEmpty()) return Map.of();
+        try {
+            return accountClient.findByIds(ids).stream().collect(Collectors.toMap(
+                    AccountSummary::id, this::displayName, (first, ignored) -> first));
+        } catch (RuntimeException ignored) {
+            return Map.of();
+        }
+    }
+
+    private String displayName(AccountSummary account) {
+        if (account.nickname() != null && !account.nickname().isBlank()) return account.nickname();
+        if (account.username() != null && !account.username().isBlank()) return account.username();
+        return "未知用户";
     }
 }
