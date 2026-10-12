@@ -50,10 +50,10 @@ function handleLogin() {
 <template>
   <div class="login-wrapper">
     <div class="login-grid"></div><div class="login-glow"></div>
-    <div class="login-orbit"><span></span><i></i><b>NX<br><small>AUTH NODE</small></b></div>
-    <div class="login-side"><span>01 / ENTRY POINT</span><strong>CONNECT<br>TO THE<br><em>NETWORK</em></strong><small>RESOURCE SHARING COMMUNITY<br>EST. 2026 / SHANGHAI</small></div>
+    <div class="login-orbit"><span></span><i></i><b>01<br><small>资源站</small></b></div>
+    <div class="login-side"><span>01 / ENTRY POINT</span><strong>连接<br>资源<br><em>社区</em></strong><small>RESOURCE SHARING COMMUNITY<br>EST. 2026</small></div>
     <div class="login-card">
-      <div class="card-kicker">NEXUS / AUTHENTICATION</div>
+      <div class="card-kicker">登录 / 账号验证</div>
       <h1 class="login-title">欢迎回来<span>_</span></h1>
       <p class="login-desc">输入凭证，接入资源信号网络。</p>
 
@@ -94,7 +94,7 @@ function handleLogin() {
       </form>
 
       <p class="register-link">
-        还没有节点？
+        还没账号？
         <a href="#" @click.prevent="router.push('/register')">创建账号 ↗</a>
       </p>
     </div>

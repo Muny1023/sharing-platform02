@@ -120,8 +120,8 @@ onUnmounted(() => { if (unreadTimer) window.clearInterval(unreadTimer) })
     <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
     <header class="topbar">
       <div class="topbar-inner">
-        <button class="brand" @click="router.push('/index')"><span class="brand-mark">✦</span><span>NEXUS</span><small>RESOURCE GRID</small></button>
-        <div class="system-status"><i></i> SYSTEM ONLINE <span>·</span> {{ posts.length.toString().padStart(2, '0') }} SIGNALS</div>
+        <button class="brand" @click="router.push('/index')"><span class="brand-mark">✦</span><span>资源站</span><small>RESOURCE GRID</small></button>
+        <div class="system-status"><i></i> SYSTEM ONLINE</div>
         <span v-if="offlinePreview" class="system-status">本地预览 · 示例数据</span>
         <nav v-else class="topbar-right">
           <button class="nav-btn user-menu" @click="router.push('/my/posts')">{{ me?.nickname || me?.username || 'CONNECTING...' }}</button>
@@ -156,7 +156,7 @@ onUnmounted(() => { if (unreadTimer) window.clearInterval(unreadTimer) })
           </article>
           <div v-if="page.total > page.size" class="pager"><button :disabled="page.current <= 1 || loading" @click="handlePageChange(page.current - 1)">←</button><span class="pager-info">{{ String(page.current).padStart(2, '0') }} / {{ String(Math.ceil(page.total / page.size)).padStart(2, '0') }}</span><button :disabled="page.current >= Math.ceil(page.total / page.size) || loading" @click="handlePageChange(page.current + 1)">→</button></div>
         </section>
-        <aside class="side-panel"><div class="side-label">NEXUS / NOTE</div><h3>把你的<br><span>想法发射</span>出去</h3><p>一个开放的资源信号站。分享工具、灵感、文章和任何值得被看见的东西。</p><button class="side-cta" :disabled="offlinePreview" @click="router.push('/post/new')">{{ offlinePreview ? '示例资源 · 点击帖子查看详情' : '创建新信号' }} <span>↗</span></button><div class="side-footer"><span>COORDINATES</span><strong>31°14'52.4" N<br>121°28'06.7" E</strong></div></aside>
+        <aside class="side-panel"><div class="side-label">资源站 / 记录</div><h3>把你的<br><span>想法发射</span>出去</h3><p>一个开放的资源信号站。分享工具、灵感、文章和任何值得被看见的东西。</p><button class="side-cta" :disabled="offlinePreview" @click="router.push('/post/new')">{{ offlinePreview ? '示例资源 · 点击帖子查看详情' : '创建新信号' }} <span>↗</span></button><div class="side-footer"><span>COORDINATES</span><strong>你的坐标<br>由每一次分享决定</strong></div></aside>
       </div>
     </main>
     <footer class="site-footer"><span>THE NETWORK IS ALIVE</span><span>SCROLL <b>›››</b></span></footer>

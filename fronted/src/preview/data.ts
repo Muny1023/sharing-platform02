@@ -6,7 +6,7 @@ export function createPreviewPosts() {
   ].map(item => ({
     ...item,
     authorId: 1,
-    authorNickname: 'NEXUS EDITOR',
+    authorNickname: '编辑部',
     resourceUrl: 'https://monster-siren.hypergryph.com/',
     commentCount: 1,
     favoriteCount: 8,
