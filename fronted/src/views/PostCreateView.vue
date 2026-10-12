@@ -52,7 +52,7 @@ function handleSubmit() {
   <div class="create-wrapper">
     <header class="topbar">
       <div class="topbar-inner">
-        <div class="brand" @click="router.push('/index')">资源分享社区</div>
+        <div class="brand" @click="router.push('/index')">资源站</div>
         <button class="back-btn" @click="router.push('/index')">返回帖子流</button>
       </div>
     </header>
@@ -110,12 +110,12 @@ function handleSubmit() {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #f5f6fa;
+  background: #0b151b;
 }
 
 .topbar {
-  background: #fff;
-  border-bottom: 1px solid #e8e8e8;
+  background: rgba(10,25,30,.86);
+  border-bottom: 1px solid rgba(103,161,157,.24);
 }
 
 .topbar-inner {
@@ -131,16 +131,16 @@ function handleSubmit() {
 .brand {
   font-size: 18px;
   font-weight: 700;
-  color: #667eea;
+  color: #83f5e6;
   cursor: pointer;
 }
 
 .back-btn {
   padding: 8px 14px;
   font-size: 14px;
-  color: #667eea;
+  color: #83f5e6;
   background: none;
-  border: 1px solid #d9dcf5;
+  border: 1px solid rgba(126,224,210,.35);
   border-radius: 6px;
   cursor: pointer;
 }
@@ -156,7 +156,7 @@ function handleSubmit() {
 
 .create-card {
   padding: 32px 36px;
-  background: #fff;
+  background: rgba(10,25,30,.86);
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
@@ -165,13 +165,13 @@ function handleSubmit() {
   margin: 0 0 8px 0;
   font-size: 24px;
   font-weight: 700;
-  color: #1a1a2e;
+  color: #eef9f6;
 }
 
 .create-desc {
   margin: 0 0 28px 0;
   font-size: 14px;
-  color: #888;
+  color: #799395;
 }
 
 .create-form {
@@ -191,44 +191,44 @@ function handleSubmit() {
   justify-content: space-between;
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: #c4deda;
 }
 
 .label-count {
   font-size: 12px;
   font-weight: 400;
-  color: #bbb;
+  color: #688487;
 }
 
 .form-input {
   padding: 12px 14px;
   font-size: 15px;
-  color: #333;
-  background: #f5f6fa;
-  border: 1.5px solid #e8e8e8;
+  color: #c4deda;
+  background: #0b151b;
+  border: 1.5px solid rgba(103,161,157,.24);
   border-radius: 8px;
   outline: none;
   transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
 }
 
 .form-input:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
-  background: #fff;
+  border-color: #83f5e6;
+  box-shadow: 0 0 0 3px rgba(94,219,214,.12);
+  background: rgba(10,25,30,.86);
 }
 
 .form-input::placeholder,
 .form-textarea::placeholder {
-  color: #b0b0b0;
+  color: #557174;
 }
 
 .form-textarea {
   padding: 14px;
   font-size: 15px;
   line-height: 1.7;
-  color: #333;
-  background: #f5f6fa;
-  border: 1.5px solid #e8e8e8;
+  color: #c4deda;
+  background: #0b151b;
+  border: 1.5px solid rgba(103,161,157,.24);
   border-radius: 8px;
   outline: none;
   resize: vertical;
@@ -237,9 +237,9 @@ function handleSubmit() {
 }
 
 .form-textarea:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
-  background: #fff;
+  border-color: #83f5e6;
+  box-shadow: 0 0 0 3px rgba(94,219,214,.12);
+  background: rgba(10,25,30,.86);
 }
 
 .submit-btn {
@@ -248,7 +248,7 @@ function handleSubmit() {
   font-size: 16px;
   font-weight: 600;
   color: #fff;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #83f5e6 0%, #65d8ca 100%);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -268,3 +268,5 @@ function handleSubmit() {
   cursor: not-allowed;
 }
 </style>
+
+<style scoped src="../styles/page-shell.css"></style>

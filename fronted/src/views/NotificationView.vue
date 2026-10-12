@@ -19,7 +19,7 @@ onMounted(load)
 </script>
 
 <template>
-  <div class="page"><header><strong @click="router.push('/index')">资源分享社区</strong><button @click="router.push('/index')">返回帖子流</button></header>
+  <div class="page"><header><strong @click="router.push('/index')">资源站</strong><button @click="router.push('/index')">返回帖子流</button></header>
     <main><div class="title-row"><h1>消息</h1><div class="actions"><button :class="{active:filter==='all'}" @click="switchFilter('all')">全部</button><button :class="{active:filter==='unread'}" @click="switchFilter('unread')">未读<span v-if="page.unread">（{{page.unread}}）</span></button><button @click="markAll">全部已读</button><button @click="clearRead">清空已读</button></div></div>
       <p v-if="!loading&&!notices.length" class="empty">暂无通知</p>
       <article v-for="n in notices" :key="n.id" :class="{unread:!n.read}" @click="markRead(n)"><div><strong>{{n.actorNickname}}</strong> {{n.content}}</div><small>{{n.createdAt}}</small><p v-if="n.postDeleted" class="deleted">相关帖子已删除</p><p v-else-if="n.commentDeleted" class="deleted">相关评论已删除</p><button class="delete" @click.stop="deleteOne(n)">删除</button></article>
@@ -28,5 +28,7 @@ onMounted(load)
   </div>
 </template>
 <style scoped>
-.page{min-height:100vh;background:#f5f6fa;color:#242638}header{height:60px;background:#fff;border-bottom:1px solid #e8e8e8;display:flex;align-items:center;justify-content:space-between;padding:0 calc((100% - 860px)/2 + 20px)}header strong{color:#667eea;cursor:pointer}button{padding:7px 14px;border:1px solid #d9dcf5;background:#fff;color:#667eea;border-radius:6px;cursor:pointer}.active{background:#667eea;color:#fff}main{max-width:860px;margin:auto;padding:24px 20px}.title-row{display:flex;justify-content:space-between;align-items:center;gap:12px}.actions{display:flex;gap:8px;flex-wrap:wrap}article{position:relative;background:#fff;padding:18px 24px;margin:12px 0;border-radius:8px;cursor:pointer;border-left:3px solid transparent}article.unread{border-left-color:#667eea;background:#fbfbff}article small{display:block;color:#aaa;margin-top:8px}.deleted{color:#999}.delete{position:absolute;right:18px;bottom:14px;color:#e74c3c;border-color:#f5cccc}.empty{text-align:center;color:#999;padding:60px}.pager{display:flex;justify-content:center;gap:16px;align-items:center;margin-top:20px}
+.page{min-height:100vh;background:#0b151b;color:#d8eeeb}header{height:60px;background:rgba(10,25,30,.86);border-bottom:1px solid rgba(103,161,157,.24);display:flex;align-items:center;justify-content:space-between;padding:0 calc((100% - 860px)/2 + 20px)}header strong{color:#83f5e6;cursor:pointer}button{padding:7px 14px;border:1px solid rgba(126,224,210,.35);background:rgba(10,25,30,.86);color:#83f5e6;border-radius:6px;cursor:pointer}.active{background:#83f5e6;color:#fff}main{max-width:860px;margin:auto;padding:24px 20px}.title-row{display:flex;justify-content:space-between;align-items:center;gap:12px}.actions{display:flex;gap:8px;flex-wrap:wrap}article{position:relative;background:rgba(10,25,30,.86);padding:18px 24px;margin:12px 0;border-radius:8px;cursor:pointer;border-left:3px solid transparent}article.unread{border-left-color:#83f5e6;background:#102b30}article small{display:block;color:#739092;margin-top:8px}.deleted{color:#739092}.delete{position:absolute;right:18px;bottom:14px;color:#ff9d87;border-color:rgba(255,157,135,.35)}.empty{text-align:center;color:#739092;padding:60px}.pager{display:flex;justify-content:center;gap:16px;align-items:center;margin-top:20px}
 </style>
+
+<style scoped src="../styles/page-shell.css"></style>

@@ -462,3 +462,4 @@ function goLogin() {
   text-decoration: underline;
 }
 </style>
+<style scoped src="../../styles/auth-shell.css"></style>

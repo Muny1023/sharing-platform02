@@ -39,4 +39,14 @@ VITE_OFFLINE_PREVIEW=true
 npm run build
 ```
 
-测试覆盖离线预览的环境开关及路由权限；构建同时执行 Vue/TypeScript 类型检查。
+构建同时执行 Vue/TypeScript 类型检查。
+
+## 目录说明
+
+- `src/views`：业务页面，`welcome` 子目录存放登录、注册和找回密码页面。
+- `src/styles`：全局基础样式和业务页、账号页共用的视觉样式；首页继续保留自己的布局。
+- `src/router`、`src/net`：路由权限及后端接口封装。
+- `src/config`、`src/preview`：开发环境离线预览开关和示例数据。
+- `env.d.ts`、`tsconfig*.json`、`vite.config.ts`、`package-lock.json`：类型声明、构建配置和依赖锁定文件，需要保留。
+
+默认空图标和未使用的 Vue DevTools、Vitest 依赖已移除。`node_modules` 为安装依赖，`dist` 为构建产物，均不提交 Git。

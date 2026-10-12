@@ -1,0 +1,42 @@
+.register-wrapper, .reset-wrapper {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  padding: 40px 24px;
+  color: #d8eeeb;
+  background: radial-gradient(ellipse at 76% 28%, rgba(18,76,75,.62), transparent 42%), radial-gradient(ellipse at 18% 88%, rgba(20,42,68,.48), transparent 45%), linear-gradient(135deg,#0b1218 0%,#091116 48%,#071015 100%);
+}
+.register-wrapper::before, .reset-wrapper::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  opacity: .2;
+  background-image: linear-gradient(rgba(121,242,229,.08) 1px,transparent 1px), linear-gradient(90deg,rgba(121,242,229,.06) 1px,transparent 1px);
+  background-size: 38px 38px;
+  mask-image: linear-gradient(110deg,#000,transparent 88%);
+}
+.register-card, .reset-card {
+  position: relative;
+  width: min(500px, 100%);
+  border-radius: 0;
+  border: 1px solid rgba(103,161,157,.24);
+  background: linear-gradient(145deg,rgba(15,32,37,.93),rgba(8,19,25,.88));
+  box-shadow: 0 28px 90px rgba(0,0,0,.46),inset 0 1px rgba(200,255,246,.025);
+}
+.register-card::before, .reset-card::before { content:""; position:absolute; right:-1px; top:-1px; width:38px; height:38px; border-top:1px solid rgba(126,224,210,.62); border-right:1px solid rgba(126,224,210,.62); }
+.register-title, .reset-title { color: #eef9f6; font-weight: 400; }
+.register-title::before, .reset-title::before { content: "资源站 / 账号验证"; display: block; margin-bottom: 20px; color: #75d9d0; font-size: 10px; letter-spacing: .2em; }
+.form-input { border-radius: 0; color: #d9efeb; background: rgba(7,19,24,.72); border: 1px solid rgba(75,121,122,.42); }
+.form-input::placeholder { color: #557174; }
+.form-input:focus { border-color: #78e4d6; box-shadow: 0 0 0 3px #5edbd622; background: #10242a; }
+.toggle-password, .login-link { color: #799395; }
+.toggle-password:hover, .login-link a, .back-link a { color: #7de7da; }
+.send-code-btn, .register-btn, .reset-btn { border-radius: 0; color: #071217; background: #65d8ca; border: 1px solid #72e7d8; }
+.send-code-btn:not(:disabled):hover, .register-btn:hover, .reset-btn:hover { background: #94f6e8; }
+.reset-steps { --el-text-color-primary: #d8eeeb; --el-text-color-placeholder: #688487; --el-color-primary: #83f5e6; --el-fill-color-blank: #0b1b21; --el-border-color-light: #28464a; }
+@media (max-width: 520px) { .register-wrapper, .reset-wrapper { padding: 24px 16px; } .register-card, .reset-card { padding: 32px 22px; } .code-field { min-width: 0; } }

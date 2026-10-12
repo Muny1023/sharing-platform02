@@ -5,6 +5,7 @@
   <div class="not-found">
     <h1>404</h1>
     <p>页面不存在</p>
+    <router-link to="/index">返回帖子流 ↗</router-link>
   </div>
 </template>
 
@@ -15,7 +16,7 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  color: #999;
+  color: #739092;
 }
 .not-found h1 {
   font-size: 72px;
@@ -26,3 +27,5 @@
   margin-top: 12px;
 }
 </style>
+
+<style scoped src="../styles/page-shell.css"></style>

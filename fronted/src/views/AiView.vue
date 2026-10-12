@@ -125,31 +125,33 @@ function clearConversation() {
 </template>
 
 <style scoped>
-.ai-page { min-height:100vh; background:#f5f6fa; color:#20212b; }
-.topbar { background:#fff; border-bottom:1px solid #e8e8e8; }
+.ai-page { min-height:100vh; background:#0b151b; color:#d8eeeb; }
+.topbar { background:rgba(10,25,30,.86); border-bottom:1px solid rgba(103,161,157,.24); }
 .topbar-inner { max-width:860px; height:60px; margin:0 auto; padding:0 20px; display:flex; align-items:center; justify-content:space-between; }
-.topbar strong { color:#667eea; }
-.back-btn,.clear-btn { border:0; background:none; color:#667eea; cursor:pointer; padding:8px; }
+.topbar strong { color:#83f5e6; }
+.back-btn,.clear-btn { border:0; background:none; color:#83f5e6; cursor:pointer; padding:8px; }
 .chat-shell { max-width:860px; min-height:calc(100vh - 60px); margin:0 auto; padding:24px 20px; display:flex; flex-direction:column; box-sizing:border-box; }
 .messages { flex:1; overflow:auto; padding:8px 0 20px; }
-.welcome,.loading { color:#888; text-align:center; padding:40px 0; }
+.welcome,.loading { color:#799395; text-align:center; padding:40px 0; }
 .message-row { display:flex; flex-direction:column; margin:0 0 18px; max-width:78%; }
 .message-row.user { margin-left:auto; align-items:flex-end; }
-.bubble { white-space:pre-wrap; line-height:1.7; padding:11px 14px; border-radius:10px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.05); }
-.user .bubble { background:#667eea; color:#fff; }
+.bubble { white-space:pre-wrap; line-height:1.7; padding:11px 14px; border-radius:10px; background:rgba(10,25,30,.86); box-shadow:0 1px 3px rgba(0,0,0,.05); }
+.user .bubble { background:#83f5e6; color:#fff; }
 .post-cards { width:100%; display:flex; flex-direction:column; gap:8px; margin-top:8px; }
-.post-card { border:1px solid #e2e4f2; background:#fff; border-radius:8px; padding:12px; text-align:left; cursor:pointer; display:flex; flex-direction:column; gap:6px; }
-.post-card:hover { border-color:#667eea; }
-.post-card strong { color:#333; }
-.post-card span { color:#666; line-height:1.5; }
-.post-card small { color:#667eea; }
-.post-summary { color:#34405a; line-height:1.6; padding-top:4px; }
-.summary-btn { align-self:flex-start; border:1px solid #cfd7f4; background:#fff; color:#667eea; border-radius:6px; padding:5px 9px; cursor:pointer; }
+.post-card { border:1px solid rgba(103,161,157,.24); background:rgba(10,25,30,.86); border-radius:8px; padding:12px; text-align:left; cursor:pointer; display:flex; flex-direction:column; gap:6px; }
+.post-card:hover { border-color:#83f5e6; }
+.post-card strong { color:#c4deda; }
+.post-card span { color:#8ba9a8; line-height:1.5; }
+.post-card small { color:#83f5e6; }
+.post-summary { color:#b9dcd6; line-height:1.6; padding-top:4px; }
+.summary-btn { align-self:flex-start; border:1px solid rgba(126,224,210,.35); background:rgba(10,25,30,.86); color:#83f5e6; border-radius:6px; padding:5px 9px; cursor:pointer; }
 .summary-btn:disabled { opacity:.55; cursor:wait; }
-.summary-bubble { margin-top:8px; padding:10px 12px; color:#34405a; background:#eef3ff; border-left:3px solid #667eea; border-radius:6px; line-height:1.6; }
-.composer { display:flex; gap:10px; padding-top:14px; border-top:1px solid #e3e4ea; }
-.composer input { flex:1; min-width:0; border:1px solid #dfe1ea; border-radius:8px; padding:12px; font-size:15px; }
-.composer button { width:76px; border:0; border-radius:8px; background:#667eea; color:#fff; cursor:pointer; }
+.summary-bubble { margin-top:8px; padding:10px 12px; color:#b9dcd6; background:#102b30; border-left:3px solid #83f5e6; border-radius:6px; line-height:1.6; }
+.composer { display:flex; gap:10px; padding-top:14px; border-top:1px solid rgba(103,161,157,.24); }
+.composer input { flex:1; min-width:0; border:1px solid rgba(103,161,157,.24); border-radius:8px; padding:12px; font-size:15px; }
+.composer button { width:76px; border:0; border-radius:8px; background:#83f5e6; color:#fff; cursor:pointer; }
 .composer button:disabled { opacity:.5; cursor:not-allowed; }
 @media (max-width:600px) { .message-row { max-width:92%; } .topbar-inner { padding:0 12px; } .chat-shell { padding:16px 12px; } }
 </style>
+
+<style scoped src="../styles/page-shell.css"></style>
