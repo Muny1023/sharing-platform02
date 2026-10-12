@@ -1,0 +1,14 @@
+:root {
+  font-family: "Arial Narrow", "Microsoft YaHei", Arial, sans-serif;
+  color: #d8eeeb;
+  background: #070b10;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+:where(.welcome-shell, .page, .create-wrapper, .detail-wrapper, .ai-page, .not-found),
+:where(.welcome-shell, .page, .create-wrapper, .detail-wrapper, .ai-page, .not-found) * { box-sizing: border-box; }
+html, body, #app { width: 100%; min-width: 320px; min-height: 100%; margin: 0; }
+body { min-height: 100vh; background: #070b10; }
+button, input, textarea, select { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }

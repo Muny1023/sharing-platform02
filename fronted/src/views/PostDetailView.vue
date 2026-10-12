@@ -3,6 +3,8 @@ import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { aiChat, get, post as sendPost, remove } from '@/net'
+import { offlinePreview as previewMode } from '@/config/preview'
+import { createPreviewPosts, createPreviewComments } from '@/preview/data'
 
 interface PostDetail {
   id: number
@@ -182,6 +184,12 @@ function submitReply(parentId: number) {
 }
 
 onMounted(() => {
+  if (previewMode) {
+    post.value = createPreviewPosts().find(item => item.id === postId.value) ?? null
+    notFound.value = !post.value
+    comments.value = post.value ? createPreviewComments(postId.value) : []
+    return
+  }
   loadPost()
   loadPostLikeStatus()
   loadFavorite()
@@ -194,12 +202,13 @@ onMounted(() => {
   <div class="detail-wrapper">
     <header class="topbar">
       <div class="topbar-inner">
-        <div class="brand" @click="router.push('/index')">资源分享社区</div>
+        <div class="brand" @click="router.push('/index')">资源站</div>
         <button class="back-btn" @click="router.push('/index')">返回帖子流</button>
       </div>
     </header>
 
     <main class="detail-main">
+      <p v-if="previewMode" class="preview-notice">本地预览模式 · 无需登录或启动后端 · 当前内容为示例数据</p>
       <div v-if="notFound" class="empty-tip">帖子不存在</div>
       <div v-else-if="tombstone" class="tombstone"><h1>该帖子已被作者删除</h1><p>原帖内容已不可用</p><button class="back-btn" @click="router.push('/index')">返回帖子流</button></div>
 
@@ -215,7 +224,7 @@ onMounted(() => {
           <a :href="post.resourceUrl" target="_blank" rel="noopener noreferrer" class="resource-link">
             🔗 获取资源：{{ post.resourceUrl }}
           </a>
-          <div class="post-actions">
+          <div v-if="!previewMode" class="post-actions">
             <button class="like-btn" :class="{ liked: postLiked }" @click="togglePostLike">
               {{ postLiked ? '已赞' : '点赞' }} · {{ post.likeCount }}
             </button>
@@ -230,7 +239,7 @@ onMounted(() => {
         <section class="comment-panel">
           <h2 class="panel-title">评论区</h2>
 
-          <div class="comment-composer">
+          <div v-if="!previewMode" class="comment-composer">
             <textarea
               v-model="commentText"
               class="composer-input"
@@ -255,7 +264,7 @@ onMounted(() => {
                 <span class="comment-time">{{ comment.createTime }}</span>
               </div>
               <p class="comment-body">{{ comment.content }}</p>
-              <div class="comment-ops">
+              <div v-if="!previewMode" class="comment-ops">
                 <button
                   class="op-btn"
                   :class="{ liked: likedCommentIds.has(comment.id) }"
@@ -287,7 +296,7 @@ onMounted(() => {
                 <span class="comment-time">{{ reply.createTime }}</span>
               </div>
               <p class="comment-body">{{ reply.content }}</p>
-              <div class="comment-ops">
+              <div v-if="!previewMode" class="comment-ops">
                 <button
                   class="op-btn"
                   :class="{ liked: likedCommentIds.has(reply.id) }"
@@ -303,16 +312,17 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.preview-notice { padding:12px 16px; border:1px solid #84b9b2; background:#e9f6f3; color:#326b66; font-size:13px; border-radius:6px; }
 .detail-wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #f5f6fa;
+  background: #0b151b;
 }
 
 .topbar {
-  background: #fff;
-  border-bottom: 1px solid #e8e8e8;
+  background: rgba(10,25,30,.86);
+  border-bottom: 1px solid rgba(103,161,157,.24);
 }
 
 .topbar-inner {
@@ -328,16 +338,16 @@ onMounted(() => {
 .brand {
   font-size: 18px;
   font-weight: 700;
-  color: #667eea;
+  color: #83f5e6;
   cursor: pointer;
 }
 
 .back-btn {
   padding: 8px 14px;
   font-size: 14px;
-  color: #667eea;
+  color: #83f5e6;
   background: none;
-  border: 1px solid #d9dcf5;
+  border: 1px solid rgba(126,224,210,.35);
   border-radius: 6px;
   cursor: pointer;
 }
@@ -354,7 +364,7 @@ onMounted(() => {
 .post-panel {
   padding: 28px 32px;
   margin-bottom: 20px;
-  background: #fff;
+  background: rgba(10,25,30,.86);
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
@@ -363,7 +373,7 @@ onMounted(() => {
   margin: 0 0 12px 0;
   font-size: 24px;
   font-weight: 700;
-  color: #1a1a2e;
+  color: #eef9f6;
 }
 
 .post-meta {
@@ -371,18 +381,18 @@ onMounted(() => {
   gap: 16px;
   margin-bottom: 20px;
   font-size: 13px;
-  color: #999;
+  color: #739092;
 }
 
 .meta-author {
-  color: #667eea;
+  color: #83f5e6;
   font-weight: 500;
 }
 
 .post-content {
   font-size: 15px;
   line-height: 1.8;
-  color: #333;
+  color: #c4deda;
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -390,9 +400,9 @@ onMounted(() => {
 .post-summary {
   margin-top: 18px;
   padding: 12px 14px;
-  color: #34405a;
-  background: #eef3ff;
-  border-left: 3px solid #667eea;
+  color: #b9dcd6;
+  background: #102b30;
+  border-left: 3px solid #83f5e6;
   border-radius: 6px;
   line-height: 1.7;
 }
@@ -402,16 +412,16 @@ onMounted(() => {
   margin-top: 20px;
   padding: 10px 16px;
   font-size: 14px;
-  color: #667eea;
-  background: #f0f2fe;
-  border: 1px solid #d9dcf5;
+  color: #83f5e6;
+  background: #102b30;
+  border: 1px solid rgba(126,224,210,.35);
   border-radius: 6px;
   text-decoration: none;
   word-break: break-all;
 }
 
 .resource-link:hover {
-  background: #e4e8fd;
+  background: #173d3f;
 }
 
 .post-actions {
@@ -420,16 +430,16 @@ onMounted(() => {
   gap: 18px;
   margin-top: 24px;
   padding-top: 18px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid rgba(103,161,157,.24);
 }
 
 .like-btn {
   padding: 8px 22px;
   font-size: 14px;
   font-weight: 600;
-  color: #667eea;
-  background: #fff;
-  border: 1px solid #d9dcf5;
+  color: #83f5e6;
+  background: rgba(10,25,30,.86);
+  border: 1px solid rgba(126,224,210,.35);
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.2s;
@@ -437,23 +447,23 @@ onMounted(() => {
 
 .like-btn.liked {
   color: #fff;
-  background: #667eea;
-  border-color: #667eea;
+  background: #83f5e6;
+  border-color: #83f5e6;
 }
 
 .comment-total {
   font-size: 13px;
-  color: #999;
+  color: #739092;
 }
-.favorite-btn,.edit-btn,.delete-btn { padding: 7px 14px; border:1px solid #d9dcf5; border-radius:6px; background:#fff; color:#667eea; cursor:pointer; }
+.favorite-btn,.edit-btn,.delete-btn { padding: 7px 14px; border:1px solid rgba(126,224,210,.35); border-radius:6px; background:rgba(10,25,30,.86); color:#83f5e6; cursor:pointer; }
 .favorite-btn.liked { color:#fff; background:#f39c12; border-color:#f39c12; }
-.delete-btn { color:#e74c3c; border-color:#f5cccc; }
-.tombstone { padding:80px 20px; text-align:center; background:#fff; border-radius:8px; color:#888; }
-.tombstone h1 { color:#555; }
+.delete-btn { color:#ff9d87; border-color:rgba(255,157,135,.35); }
+.tombstone { padding:80px 20px; text-align:center; background:rgba(10,25,30,.86); border-radius:8px; color:#799395; }
+.tombstone h1 { color:#b9d4d1; }
 
 .comment-panel {
   padding: 24px 32px;
-  background: #fff;
+  background: rgba(10,25,30,.86);
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
@@ -462,7 +472,7 @@ onMounted(() => {
   margin: 0 0 18px 0;
   font-size: 18px;
   font-weight: 600;
-  color: #1a1a2e;
+  color: #eef9f6;
 }
 
 .comment-composer,
@@ -475,9 +485,9 @@ onMounted(() => {
   padding: 12px 14px;
   font-size: 14px;
   line-height: 1.6;
-  color: #333;
-  background: #f5f6fa;
-  border: 1.5px solid #e8e8e8;
+  color: #c4deda;
+  background: #0b151b;
+  border: 1.5px solid rgba(103,161,157,.24);
   border-radius: 8px;
   outline: none;
   resize: vertical;
@@ -486,8 +496,8 @@ onMounted(() => {
 }
 
 .composer-input:focus {
-  border-color: #667eea;
-  background: #fff;
+  border-color: #83f5e6;
+  background: rgba(10,25,30,.86);
 }
 
 .composer-foot {
@@ -501,7 +511,7 @@ onMounted(() => {
 .composer-count {
   margin-right: auto;
   font-size: 12px;
-  color: #bbb;
+  color: #688487;
 }
 
 .submit-btn {
@@ -509,7 +519,7 @@ onMounted(() => {
   font-size: 14px;
   font-weight: 600;
   color: #fff;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #83f5e6 0%, #65d8ca 100%);
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -523,9 +533,9 @@ onMounted(() => {
 .cancel-btn {
   padding: 8px 16px;
   font-size: 14px;
-  color: #666;
+  color: #8ba9a8;
   background: none;
-  border: 1px solid #e8e8e8;
+  border: 1px solid rgba(103,161,157,.24);
   border-radius: 6px;
   cursor: pointer;
 }
@@ -533,7 +543,7 @@ onMounted(() => {
 .comment-thread {
   padding-bottom: 8px;
   margin-bottom: 8px;
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solid rgba(103,161,157,.24);
 }
 
 .comment-item {
@@ -543,7 +553,7 @@ onMounted(() => {
 .comment-item.reply {
   margin-left: 40px;
   padding: 10px 0 4px 0;
-  border-left: 2px solid #f0f2fe;
+  border-left: 2px solid #102b30;
   padding-left: 16px;
 }
 
@@ -557,19 +567,19 @@ onMounted(() => {
 .comment-author {
   font-size: 14px;
   font-weight: 600;
-  color: #667eea;
+  color: #83f5e6;
 }
 
 .comment-time {
   font-size: 12px;
-  color: #bbb;
+  color: #688487;
 }
 
 .comment-body {
   margin: 0 0 8px 0;
   font-size: 14px;
   line-height: 1.7;
-  color: #333;
+  color: #c4deda;
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -582,7 +592,7 @@ onMounted(() => {
 .op-btn {
   padding: 4px 10px;
   font-size: 13px;
-  color: #999;
+  color: #739092;
   background: none;
   border: none;
   border-radius: 6px;
@@ -590,21 +600,21 @@ onMounted(() => {
 }
 
 .op-btn:hover {
-  color: #667eea;
-  background: #f0f2fe;
+  color: #83f5e6;
+  background: #102b30;
 }
 
 .op-btn.liked {
-  color: #667eea;
+  color: #83f5e6;
   font-weight: 600;
 }
 
 .empty-tip {
   padding: 60px 0;
   font-size: 14px;
-  color: #999;
+  color: #739092;
   text-align: center;
-  background: #fff;
+  background: rgba(10,25,30,.86);
   border-radius: 8px;
 }
 
@@ -612,3 +622,5 @@ onMounted(() => {
   padding: 30px 0;
 }
 </style>
+
+<style scoped src="../styles/page-shell.css"></style>
