@@ -19,7 +19,7 @@ AI 聊天：
 ## 环境要求
 
 - JDK 17（当前 Spring Boot 4.0.8；JDK 24 也可用于本地运行）
-- Maven 3.9+
+- Maven 3.9+（需自行安装；本分支不提供 Maven Wrapper）
 - Node.js 22.18+ 或 24.12+
 - MySQL 8、Redis、RabbitMQ
 - Nacos 2.x/3.x（默认 `localhost:8848`）
@@ -95,10 +95,9 @@ npm ci
 npm run dev
 ```
 
-前端默认访问 Gateway `http://localhost:8080`。前端测试和构建：
+前端默认访问 Gateway `http://localhost:8080`。前端构建：
 
 ```powershell
-npm test
 npm run build
 ```
 
@@ -112,17 +111,19 @@ uvicorn app.main:app --host 127.0.0.1 --port 8000
 
 ## 验证命令
 
-运行后端测试（排除需要外部 Nacos 实例的手工负载均衡测试）：
+`github-clean` 分支只保留手工负载均衡测试，其余测试保留在 `master` 分支。CI 检查后端编译和前端类型检查、构建。
+
+编译后端及保留的测试（无需启动中间件）：
 
 ```powershell
 cd cloud-backend
-mvn test "-Dtest=!LoadBalancerVerificationTest"
+mvn clean test-compile
 ```
 
-只验证 Gateway 配置：
+单独运行负载均衡验证前，需要启动 Nacos 和 8081、8086 两个账号服务实例：
 
 ```powershell
-mvn -pl cloud-backend/cloud-gateway -Dtest=CloudGatewayApplicationTests test
+mvn -pl cloud-gateway -Dtest=LoadBalancerVerificationTest test
 ```
 
 验证 Nacos 负载均衡前，先启动 Nacos 和 8081、8086 两个账号服务实例，再在 IDEA 中直接运行 `LoadBalancerVerificationTest`。
