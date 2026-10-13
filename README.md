@@ -2,6 +2,20 @@
 
 这是一个由 Spring Cloud Java 微服务、Vue 前端和独立 Python AI 服务组成的资源分享社区项目。
 
+## 项目预览
+
+登录界面：
+
+![登录界面](image/login.png)
+
+首页：
+
+![首页](image/home.png)
+
+AI 聊天：
+
+![AI 聊天](image/ai-chat.png)
+
 ## 环境要求
 
 - JDK 17（当前 Spring Boot 4.0.8；JDK 24 也可用于本地运行）
